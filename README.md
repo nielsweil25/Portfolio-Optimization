@@ -18,21 +18,24 @@ The five instruments give the portfolio exposure to global equities, US bonds, a
 4. Maximize the estimated Sharpe ratio using constrained optimization (`scipy.optimize.minimize`, SLSQP).
 5. Generate 5,000 random portfolios that obey the same 80% individual-weight limit and compare their estimated risk and return with the optimum.
 6. Plot the portfolios and an illustrative line through the risk-free-rate intercept and the optimized portfolio.
+7. !!! The 80% limit for bounds is arbitrary, we can choose another one limit to see the effect on the optimal weights and on the Sharpe Ratio
 
 ## Mathematical model
 
-Let \(P_{i,t}\) be the adjusted closing price of asset \(i\) on day \(t\). Its daily **log return** is
+Let $$P_{i,t}$$ be the adjusted closing price of asset $$i$$ on day $$t$$. Its daily **log return** is
 
 $$
 r_{i,t}=\ln\left(\frac{P_{i,t}}{P_{i,t-1}}\right).
 $$
 
-For \(N=5\) assets, write the portfolio weights as \(w=(w_1,\ldots,w_N)^\top\). The notebook estimates the vector of annualized mean log returns and the annualized covariance matrix as
+For $$N=5$$ assets, write the portfolio weights as $$w=(w_1,\ldots,w_N)^\top$$. The notebook estimates the vector of annualized mean log returns and the annualized covariance matrix as
 
 $$
-\hat{\mu}=252\,\overline{r},
-\qquad
-\hat{\Sigma}=252\,\operatorname{Cov}(r).
+\hat{\mu} = 252 \overline{r}
+$$
+
+$$
+\hat{\Sigma} = 252 \mathrm{Cov}(r)
 $$
 
 Using these estimates, it calculates the portfolio's **estimated annual log return** and **annualized volatility**:
@@ -53,9 +56,9 @@ $$
 \quad 0\leq w_i\leq 0.80.
 $$
 
-Here \(r_f\) is the annualized risk-free-rate proxy. The sum constraint invests the entire portfolio; the bounds prohibit short sales and cap any single position at 80%. The code minimizes **negative Sharpe** because SciPy's `minimize` solves minimization problems.
+Here $$r_f$$ is the annualized risk-free-rate proxy. The sum constraint invests the entire portfolio; the bounds prohibit short sales and cap any single position at 80%. The code minimizes **negative Sharpe** because SciPy's `minimize` solves minimization problems.
 
-**Return convention:** The notebook uses log returns for the assets but takes the FRED bill quote directly as \(r_f\). It is a practical approximation: `DTB3` is quoted on a discount basis, not as an annual log return. For a more exact comparison, convert the Treasury quote to an investment return and then to a log return on a consistent horizon. Also, the weighted sum of asset log returns is an approximation to the return on a discretely rebalanced portfolio; for an exact daily portfolio return, use weighted **simple** asset returns.
+**Return convention:** The notebook uses log returns for the assets but takes the FRED bill quote directly as $$r_f$$. It is a practical approximation: `DTB3` is quoted on a discount basis, not as an annual log return. For a more exact comparison, convert the Treasury quote to an investment return and then to a log return on a consistent horizon. Also, the weighted sum of asset log returns is an approximation to the return on a discretely rebalanced portfolio; for an exact daily portfolio return, use weighted **simple** asset returns.
 
 ## Interpreting the visualization
 
@@ -67,31 +70,11 @@ The cloud of random points **is not the efficient frontier**. A proper frontier 
 
 ## Run the notebook
 
-Install Python and the dependencies:
 
-```bash
-python -m pip install -r requirements.txt
-```
 
-The FRED request needs your own API key. Set it as an environment variable **before launching Jupyter**:
+I put my own API key but the FRED request needs your own API key. Set it as an environment variable **before launching Jupyter**:
 
-```powershell
-# Windows PowerShell
-$env:FRED_API_KEY="your-key"
-```
 
-```bash
-# macOS / Linux
-export FRED_API_KEY="your-key"
-```
-
-Then run:
-
-```bash
-jupyter notebook PortfolioOptimization.ipynb
-```
-
-Execute the cells in order. The notebook fetches live data, so the weights and chart may differ between runs. Keep the API key out of the notebook and out of GitHub.
 
 ## Limitations and next steps
 
@@ -111,4 +94,3 @@ Execute the cells in order. The notebook fetches live data, so the weights and c
 | Constrained optimization | `scipy.optimize` (SLSQP) |
 | Visualization | `matplotlib` |
 
-**Educational project. Not investment advice.**
